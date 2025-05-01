@@ -94,6 +94,41 @@ AR dan MA sebagian besar signifikan.
 AIC sedikit lebih tinggi = 9463.848.
 model ini menghasilkan proyeksi yang lebih stabil dan mengikuti tren naik aktual harga emas selama periode uji, menjadikannya lebih cocok secara prediktif.
 
+### LSTM (Long Short-Term Memory)
+
+LSTM adalah jenis jaringan saraf tiruan berbasis Recurrent Neural Network (RNN) yang dirancang untuk mengatasi masalah long-term dependencies pada data time series. Model ini sangat efektif dalam menangkap pola non-linier dan fluktuasi harga yang kompleks seperti pada data harga emas.
+
+#### Proses Pemodelan
+1. Preprocessing Data
+- Data harga emas diambil dari kolom Price dan dikonversi menjadi array numerik
+- Skala data distandarisasi menggunakan MinMaxScaler ke rentang 0–1 untuk mempercepat konvergensi model LSTM
+- Data dibagi menjadi:
+Training set: 80% (1108 poin)
+Testing set: 20% (278 poin)
+
+2. Pembuatan Window Time Series
+- Menggunakan pendekatan sliding window:
+Input (X): 30 hari harga emas sebelumnya
+Target (y): harga emas pada hari ke-31
+- Dataset hasil windowing:
+X_train: (1078, 30)
+y_train: (1078,)
+X_test: (248, 30)
+y_test: (248,)
+
+3. Arsitektur Model
+Model LSTM dibangun menggunakan Keras dengan arsitektur sebagai berikut:
+- 2 lapisan LSTM dengan masing-masing 50 unit
+- 1 lapisan Dense (output) untuk memprediksi harga
+- Optimizer: Adam
+- Loss Function: Mean Squared Error
+- Regularisasi: EarlyStopping pada loss dengan patience=5
+
+#### Model Final dan Prediksi
+Setelah dilatih selama maksimum 50 epoch (berhenti lebih awal karena EarlyStopping), model diuji terhadap data uji
+
+
+## Evaluation
 #### Evaluasi Model ARIMA 
 MAE = 255.01
 - Rata-rata kesalahan prediksi harian sekitar 255 poin
@@ -103,107 +138,26 @@ RMSE = 333.80
 Meskipun ARIMA(2,1,2) memiliki AIC terendah secara statistik, model ARIMA(2,2,2) terbukti lebih mampu merepresentasikan pola tren naik tajam pada data uji. Oleh karena itu, model ini dipilih sebagai model akhir untuk prediksi harga emas dalam proyek ini
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#### Evaluasi Model LSTM 
+- Prediksi dilakukan terhadap data testing, kemudian dibalik skalanya menggunakan inverse_transform. Hasil evaluasi:
+- MAPE: 3.30%
+Rata-rata kesalahan prediksi relatif hanya 3.30% dari harga aktual
+- Akurasi: 96.70%
+Model sangat presisi dalam menangkap pola harga emas
+
+Karakteristik Prediksi:
+- Mampu mengikuti tren naik dan turun dengan baik
+- Lebih fleksibel dalam mempelajari pola non-linier dibanding ARIMA
+- Cenderung menghasilkan kurva prediksi yang halus dan konsisten
+
+Model LSTM memberikan performa prediktif yang sangat baik terhadap harga emas:
+- MAPE rendah menandakan model efektif dalam menangkap dinamika data historis
+- Akurasi tinggi membuktikan keunggulan LSTM dalam memodelkan data time series non-linier
+- Cocok digunakan untuk prediksi jangka pendek hingga menengah dengan fluktuasi harga tinggi
+
+Model LSTM lebih unggul dibandingkan ARIMA dalam memprediksi harga emas karena akurasi yang jauh lebih tinggi, kemampuan menangkap tren kompleks, dan kesalahan prediksi yang lebih rendah secara keseluruhan. Oleh karena itu, LSTM merupakan model yang lebih direkomendasikan untuk digunakan dalam prediksi harga emas ke depan.
 
 
 Referensi:
-
-World Gold Council. (2023). Gold Market Commentary
-
-Zhang et al. (2020). Forecasting gold price with LSTM. Journal of Economic Forecasting.
+[1] World Gold Council. (2023). Gold Market Commentary
+[2] Zhang et al. (2020). Forecasting gold price with LSTM. Journal of Economic Forecasting.
