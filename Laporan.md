@@ -29,8 +29,24 @@ Metrik evaluasi yang digunakan untuk mengukur kinerja model adalah:
 - Mean Squared Error (MSE)
 - Mean Absolute Percentage Error (MAPE)
 
+## Data Understanding
+- Jumlah Data: 1368 baris
+- Periode Waktu: Tahun 2020 hingga April 2025
+- Sumber Data: Investing.com
+- Fitur:
+Date: Tanggal perdagangan 
+Price: Harga penutupan emas pada tanggal tersebut 
+Open: Harga pembukaan pada saat pasar dibuka pada hari itu 
+High: Harga tertinggi emas yang dicapai padda hari itu 
+Low: Harga terendah emas dalam hari itu
+Vol: Volume transaksi
+Change %: Perubahan harian dalam persentase 
 
+Teknik Eksplorasi : 
+- Analisis distribusi dan tren data Price, yaitu menggunakan scatter plot untuk melihat pola data tren data emas kemudian melihat korelasi ntar fitur dengan heatmap dan melihat distribusi harga emas dengan histogram
+- Deteksi dan pembersihan data duplikat atau anomali
 
+  
 
 
 
