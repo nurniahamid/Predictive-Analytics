@@ -2,16 +2,12 @@
 
 ## Domain Proyek
 
-  Harga emas merupakan salah satu aset investasi yang sangat diperhatikan karena nilainya yang relatif stabil dan cenderung meningkat dalam jangka panjang. Menurut laporan dari World Gold Council (2023), volatilitas harga emas meningkat signifikan dalam beberapa tahun terakhir akibat ketidakpastian global. Hal ini menjadikan kemampuan untuk memprediksi harga emas secara akurat sebagai tantangan sekaligus peluang besar di bidang keuangan dan data science.
+Harga emas merupakan salah satu aset investasi utama yang sering dijadikan acuan oleh investor global karena kestabilannya dalam jangka panjang. Namun, volatilitas harga emas meningkat dalam beberapa tahun terakhir akibat ketidakpastian global, sebagaimana dilaporkan oleh World Gold Council (2023). Oleh karena itu, kemampuan untuk memprediksi harga emas secara akurat memiliki nilai strategis di bidang keuangan dan data science.
 
-  Meskipun pergerakan harga emas dipengaruhi oleh berbagai faktor eksternal seperti inflasi, suku bunga, kondisi geopolitik, dan nilai tukar mata uang, proyek ini secara eksplisit tidak menggunakan variabel-variabel tersebut. Fokus utama adalah pada pemanfaatan data historis harga emas sebagai satu-satunya input dalam pemodelan prediksi.
-
-  Pendekatan ini dipilih karena beberapa alasan:
-- Ketersediaan dan konsistensi data: Data historis harga emas lebih mudah diakses dan bersifat kuantitatif serta terstruktur.
-- Kemampuan model time series: Model seperti ARIMA dan LSTM dirancang untuk menemukan pola dari data masa lalu dan memproyeksikannya ke masa depan, bahkan tanpa bantuan variabel eksternal.
-- Tujuan eksploratif: Proyek ini bertujuan membandingkan pendekatan statistik dan deep learning dalam konteks prediksi univariat (satu variabel)
-
-Dengan pendekatan ini, proyek tetap memberikan nilai praktis bagi analis atau investor yang ingin memperkirakan harga emas jangka pendek hingga menengah berdasarkan tren historis.
+Proyek ini berfokus pada prediksi harga emas dengan menggunakan data historis tanpa memasukkan variabel eksternal (seperti inflasi atau nilai tukar), dengan alasan:
+- Data historis tersedia dan terstruktur dengan baik
+- Model time series seperti ARIMA dan LSTM efektif dalam menangkap pola masa lalu
+- Pendekatan eksploratif univariat lebih sederhana untuk tujuan pembelajaran dan evaluasi performa model
 
 ## Business Understanding
 ### Problem Statements
