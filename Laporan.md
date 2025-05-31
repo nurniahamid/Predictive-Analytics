@@ -11,36 +11,41 @@ Proyek ini berfokus pada prediksi harga emas dengan menggunakan data historis ta
 
 ## Business Understanding
 ### Problem Statements
-Bagaimana memprediksi harga emas pada periode waktu mendatang berdasarkan data historis harga emas 2020–2025?
+Bagaimana memprediksi harga emas untuk periode waktu mendatang berdasarkan data historis 2020–2025?
 ### Goals 
-- Membuat model prediksi harga emas harian.
-- Membandingkan performa model statistik ARIMA dengan model deep learning LSTM.
-- Menentukan model terbaik untuk prediksi harga emas
+- Membangun model prediksi harga emas harian.
+- Membandingkan performa antara model statistik (ARIMA) dan deep learning (LSTM).
+- Menentukan model terbaik berdasarkan akurasi prediksi.
 ### Solution Statement
-Untuk mencapai tujuan tersebut, proyek ini mengusulkan dua pendekatan:
-1. ARIMA (AutoRegressive Integrated Moving Average): Model statistik yang baik untuk menangani pola linier dalam data time series.
-2. LSTM (Long Short-Term Memory): Model deep learning berbasis RNN yang unggul dalam menangkap dependensi jangka panjang dalam data sekuensial.
-Metrik evaluasi yang digunakan untuk mengukur kinerja model adalah:
-- Mean Absolute Error (MAE)
-- Mean Squared Error (MSE)
-- Mean Absolute Percentage Error (MAPE)
+Dua pendekatan yang digunakan:
+1. ARIMA – Model statistik untuk pola linier dalam time series.
+1. LSTM – Model deep learning berbasis RNN untuk menangkap pola non-linier jangka panjang.
+
+Metrik evaluasi:
+- MAE (Mean Absolute Error)
+- MSE (Mean Squared Error)
+- MAPE (Mean Absolute Percentage Error)
 
 ## Data Understanding
-- Jumlah Data: 1368 baris
-- Periode Waktu: Tahun 2020 hingga April 2025
-- Sumber Data: Investing.com
-- Fitur:
-Date: Tanggal perdagangan 
-Price: Harga penutupan emas pada tanggal tersebut 
-Open: Harga pembukaan pada saat pasar dibuka pada hari itu 
-High: Harga tertinggi emas yang dicapai padda hari itu 
-Low: Harga terendah emas dalam hari itu
-Vol: Volume transaksi
-Change %: Perubahan harian dalam persentase 
+Dataset : 
+- Sumber data: Investing.com
+- Tautan file: XAU_USD Historical Data.csv
+- Jumlah data: 1368 baris, 6 kolom
+Kolom:
+- Date: Tanggal transaksi
+- Price: Harga penutupan
+- Open, High, Low: Harga pembukaan, tertinggi, dan terendah per hari
+- Change %: Persentase perubahan harga harian
+Kondisi Data :
+- Missing value: Tidak ditemukan missing value pada kolom utama
+- Duplikat: Tidak ditemukan duplikat baris setelah inspeksi
+- Outlier: Dicek secara visual melalui plot dan nilai z-score pada kolom Price. Outlier diabaikan karena cenderung valid dalam konteks keuangan.
+Eksplorasi Visual Awal : 
+- Visualisasi tren (Price) menggunakan scatter plot
+- Analisis korelasi antar fitur dengan heatmap
+- Pemeriksaan distribusi harga dengan histogram
 
-Teknik Eksplorasi : 
-- Analisis distribusi dan tren data Price, yaitu menggunakan scatter plot untuk melihat pola data tren data emas kemudian melihat korelasi ntar fitur dengan heatmap dan melihat distribusi harga emas dengan histogram
-- Deteksi dan pembersihan data duplikat atau anomali
+
 
 ## Data Preparation
 ### Langkah-langkah yang dilakukan 
