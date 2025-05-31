@@ -49,118 +49,61 @@ Eksplorasi Visual Awal :
 - Analisis korelasi antar fitur dengan heatmap
 - Pemeriksaan distribusi harga dengan histogram
 
-
-
 ## Data Preparation
 ### Langkah-langkah yang dilakukan 
-1. Konversi Tipe data tanggal
-   Kolom 'Date' dikonversi menjadi format 'datetime' untuk memudahkan analisis time series
-2. Sortir dan Reset Index
-   Data disortir berdasarkan tanggal (Date) dan di-reset index-nya untuk memastikan urutan time series yang bersih dan rapi
-3. Data Splitting (Train-Test Split)
-   Dataset dibagi menjadi 80% data latih dan 20% data uji berdasarkan urutan waktu (tanpa shuffling, karena ini time series)
-   - Train data shape: (1108, 5)
-   - Test data shape: (278, 5)
-4. Pemilihan Kolom Target
-Hanya kolom Price yang digunakan karena fokus pada prediksi harga emas (univariat)
-5. Normalisasi Data (khusus untuk LSTM)
-   Data distandarkan menggunakan MinMaxScaler ke rentang [0,1] agar model LSTM bisa belajar lebih efektif dari pola
-6. Sliding Window (LSTM)
- Sequence data dibentuk dalam bentuk time steps untuk membangun dataset sekuensial yang dibutuhkan LSTM
-
-### Alasan menggunakan Tahapan Ini:
-- Urutan waktu harus terjaga dalam data time series — tidak boleh dilakukan shuffling seperti pada supervised learning biasa.
-- Model seperti LSTM membutuhkan data terstandardisasi agar proses training lebih stabil dan cepat konvergen.
-- ARIMA dan LSTM memiliki kebutuhan input yang berbeda, maka data perlu dipersiapkan dengan cara yang disesuaikan untuk masing-masing model.
+1. Konversi kolom Date ke datetime format
+2. Sortir data berdasarkan tanggal secara menaik (oldest to newest)
+3. Reset index agar linier dengan urutan waktu
+4. Pilih kolom target: Price
+5. Drop fitur non-relevan: seperti Vol, Change % yang tidak digunakan dalam pemodelan
+6. Pembersihan angka: Hapus simbol dan ubah kolom numerik ke float (Price, Open, High, Low)
+7. Split dataset:
+80% untuk pelatihan
+20% untuk pengujian
+8. Normalisasi data: MinMaxScaler digunakan sebelum input ke LSTM
+9. Sliding window: Membentuk data sekuens 30 hari sebagai input mode
 
 ## Modeling
-
 ### ARIMA (AutoRegressive Integrated Moving Average)
-ARIMA adalah model time series yang digunakan untuk meramalkan data masa depan berdasarkan nilai masa lalu. ARIMA bekerja dengan tiga komponen utama:
-- AR (AutoRegressive): ketergantungan terhadap nilai sebelumnya
-- I (Integrated): pengurutan berdasarkan perbedaan (differencing)
-- MA (Moving Average): ketergantungan terhadap kesalahan masa lalu
-
-#### Proses Pemodelan
-1. Transformasi ke Time Series Data latih dan data uji diubah ke format time series dengan index tanggal (Date) dan frekuensi diinfersikan
-2. Identifikasi Parameter (p,d,q) Plot ACF dan PACF digunakan untuk mengevaluasi pola lag dalam data, sebagai dasar pemilihan parameter ARIMA.
-3. Eksperimen Model Tiga model dibandingkan:
-- ARIMA(1,1,1)
-AR(1) tidak signifikan (p=0.08)
-AIC = 9461.276
-Tidak cukup kuat menangkap dinamika tren harga emas.
-- ARIMA(2,1,2)
-Semua parameter signifikan.
-AIC = 9460.719 (terendah)
-Log Likelihood tertinggi.
-Secara statistik paling efisien, namun secara prediksi justru kurang menangkap tren naik tajam di data uji
-- ARIMA(2,2,2)
-AR dan MA sebagian besar signifikan.
-AIC sedikit lebih tinggi = 9463.848.
-model ini menghasilkan proyeksi yang lebih stabil dan mengikuti tren naik aktual harga emas selama periode uji, menjadikannya lebih cocok secara prediktif.
+- Model time series tradisional ARIMA(p,d,q)
+- Pemilihan parameter melalui ACF & PACF
+- Evaluasi berbagai kombinasi parameter:
+   - ARIMA(1,1,1): hasil kurang memuaskan
+   - ARIMA(2,1,2): nilai AIC rendah, tetapi overfitting
+   - ARIMA(2,2,2): stabil dan prediktif
 
 ### LSTM (Long Short-Term Memory)
-
-LSTM adalah jenis jaringan saraf tiruan berbasis Recurrent Neural Network (RNN) yang dirancang untuk mengatasi masalah long-term dependencies pada data time series. Model ini sangat efektif dalam menangkap pola non-linier dan fluktuasi harga yang kompleks seperti pada data harga emas.
-
-#### Proses Pemodelan
-1. Preprocessing Data
-- Data harga emas diambil dari kolom Price dan dikonversi menjadi array numerik
-- Skala data distandarisasi menggunakan MinMaxScaler ke rentang 0–1 untuk mempercepat konvergensi model LSTM
-- Data dibagi menjadi:
-Training set: 80% (1108 poin)
-Testing set: 20% (278 poin)
-
-2. Pembuatan Window Time Series
-- Menggunakan pendekatan sliding window:
-Input (X): 30 hari harga emas sebelumnya
-Target (y): harga emas pada hari ke-31
-- Dataset hasil windowing:
-X_train: (1078, 30)
-y_train: (1078,)
-X_test: (248, 30)
-y_test: (248,)
-
-3. Arsitektur Model
-Model LSTM dibangun menggunakan Keras dengan arsitektur sebagai berikut:
-- 2 lapisan LSTM dengan masing-masing 50 unit
-- 1 lapisan Dense (output) untuk memprediksi harga
-- Optimizer: Adam
-- Loss Function: Mean Squared Error
-- Regularisasi: EarlyStopping pada loss dengan patience=5
-
-#### Model Final dan Prediksi
-Setelah dilatih selama maksimum 50 epoch (berhenti lebih awal karena EarlyStopping), model diuji terhadap data uji
+- Recurrent Neural Network untuk menangkap ketergantungan jangka panjang
+- Input: 30 hari historis untuk memprediksi harga hari ke-31
+- Arsitektur:
+   - 2 layer LSTM (50 unit masing-masing)
+   - 1 Dense output layer
+   - Adam optimizer + MSE loss
+   - EarlyStopping digunakan untuk menghindari overfitting
 
 
 ## Evaluation
 #### Evaluasi Model ARIMA 
-MAE = 255.01
-- Rata-rata kesalahan prediksi harian sekitar 255 poin
-RMSE = 333.80
-- Terdapat beberapa hari dengan error besar; RMSE lebih sensitif terhadap outlier
+Hasil Evaluasi Model
+- ARIMA(2,2,2):
+- MAE: 255.01
+- RMSE: 333.80
 
-Meskipun ARIMA(2,1,2) memiliki AIC terendah secara statistik, model ARIMA(2,2,2) terbukti lebih mampu merepresentasikan pola tren naik tajam pada data uji. Oleh karena itu, model ini dipilih sebagai model akhir untuk prediksi harga emas dalam proyek ini
-
-
-#### Evaluasi Model LSTM 
-- Prediksi dilakukan terhadap data testing, kemudian dibalik skalanya menggunakan inverse_transform. Hasil evaluasi:
+LSTM:
 - MAPE: 3.30%
-Rata-rata kesalahan prediksi relatif hanya 3.30% dari harga aktual
-- Akurasi: 96.70%
-Model sangat presisi dalam menangkap pola harga emas
+- Akurasi estimasi: 96.7%
 
-Karakteristik Prediksi:
-- Mampu mengikuti tren naik dan turun dengan baik
-- Lebih fleksibel dalam mempelajari pola non-linier dibanding ARIMA
-- Cenderung menghasilkan kurva prediksi yang halus dan konsisten
+#### Keterkaitan dengan Business Understanding
 
-Model LSTM memberikan performa prediktif yang sangat baik terhadap harga emas:
-- MAPE rendah menandakan model efektif dalam menangkap dinamika data historis
-- Akurasi tinggi membuktikan keunggulan LSTM dalam memodelkan data time series non-linier
-- Cocok digunakan untuk prediksi jangka pendek hingga menengah dengan fluktuasi harga tinggi
+Pertanyaan
+1. Apakah masalah bisnis berhasil dijawab?
+Jawaban : Ya, model berhasil memberikan prediksi harga emas harian yang cukup akurat.
+2. Apakah semua goals tercapai?
+Jawaban : Ya, model dibangun, dievaluasi, dan model terbaik ditentukan.
+3. Apakah solusi berdampak?
+Jawaban : Ya, LSTM memberikan akurasi tinggi dan dapat digunakan sebagai referensi untuk strategi investasi jangka pendek.
 
-Model LSTM lebih unggul dibandingkan ARIMA dalam memprediksi harga emas karena akurasi yang jauh lebih tinggi, kemampuan menangkap tren kompleks, dan kesalahan prediksi yang lebih rendah secara keseluruhan. Oleh karena itu, LSTM merupakan model yang lebih direkomendasikan untuk digunakan dalam prediksi harga emas ke depan.
+Model LSTM berhasil menjawab kebutuhan prediksi harga emas dengan performa yang sangat baik, dan dapat membantu pelaku pasar dalam mengambil keputusan berbasis data historis.
 
 
 Referensi:
