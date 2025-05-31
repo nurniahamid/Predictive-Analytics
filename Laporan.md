@@ -27,19 +27,23 @@ Metrik evaluasi:
 - MAPE (Mean Absolute Percentage Error)
 
 ## Data Understanding
+
 Dataset : 
 - Sumber data: Investing.com
 - Tautan file: XAU_USD Historical Data.csv
 - Jumlah data: 1368 baris, 6 kolom
+
 Kolom:
 - Date: Tanggal transaksi
 - Price: Harga penutupan
 - Open, High, Low: Harga pembukaan, tertinggi, dan terendah per hari
 - Change %: Persentase perubahan harga harian
+
 Kondisi Data :
 - Missing value: Tidak ditemukan missing value pada kolom utama
 - Duplikat: Tidak ditemukan duplikat baris setelah inspeksi
 - Outlier: Dicek secara visual melalui plot dan nilai z-score pada kolom Price. Outlier diabaikan karena cenderung valid dalam konteks keuangan.
+
 Eksplorasi Visual Awal : 
 - Visualisasi tren (Price) menggunakan scatter plot
 - Analisis korelasi antar fitur dengan heatmap
