@@ -29,11 +29,10 @@ Metrik evaluasi:
 ## Data Understanding
 
 Dataset : 
-- Sumber data: Investing.com
+- Sumber data: Investing.com - XAU/USD Historical Data
 - Tautan file: https://www.investing.com/currencies/xau-usd-historical-data
 - Jumlah data: 
-Data berisi 1368 baris dalam data set
-Data mempunyai 7 kolom, yaitu : Date, Price, Open, High, Low Vol, dan Change %
+Dataset awal terdiri dari 1.386 baris dan 7 kolom, yaitu: Date, Price, Open, High, Low, Vol., dan Change %
 
 Kolom:
 - Date: Tanggal perdagangan 
@@ -41,13 +40,13 @@ Kolom:
 - Open: Harga pembukaan pada saat pasar dibuka pada hari itu 
 - High: Harga tertinggi emas yang dicapai padda hari itu 
 - Low: Harga terendah emas dalam hari itu
-- Vol: Volume transaksi
+- Vol:  Volume transaksi emas pada hari tersebut. Kolom ini memiliki banyak missing values dan tidak digunakan dalam analisis
 - Change %: Perubahan harian dalam persentase
 
 Kondisi Data :
 - Fitur yang Digunakan: Dari seluruh kolom yang tersedia, hanya fitur Date, Price, Harga, High, dan Low yang digunakan dalam analisis.
-Kolom Volume (Vol) dan Change dihapus (drop) karena tidak relevan dengan tujuan pemodelan.
-- Missing Value: Terdapat nilai kosong (missing) pada kolom Volume, namun karena kolom ini tidak digunakan, maka missing value tersebut diabaikan.
+- Kolom Vol. memiliki banyak missing values (hanya 14 nilai non-null dari 1.386 entri). Karena kolom ini tidak digunakan dalam analisis, missing values tersebut diabaikan.
+- Kolom Volume (Vol) dan Change dihapus (drop) karena tidak relevan dengan tujuan pemodelan.
 - Duplikat: Tidak ditemukan baris duplikat setelah dilakukan pemeriksaan data.
 - Outlier: Outlier diperiksa menggunakan visualisasi plot dan perhitungan z-score pada kolom Price.
 Outlier tidak dihapus, karena masih dianggap valid dalam konteks data keuangan (misalnya, lonjakan harga wajar terjadi pada periode tertentu).
@@ -74,9 +73,9 @@ Eksplorasi Visual Awal :
 ## Modeling
 ### ARIMA (AutoRegressive Integrated Moving Average)
 Model ARIMA digunakan untuk memodelkan data deret waktu (time series) dengan memperhatikan pola autokorelasi, tren, dan fluktuasi acak. ARIMA memiliki tiga komponen utama:
-- AutoRegressive (AR) – Menjelaskan bahwa nilai masa kini dapat diprediksi dari kombinasi nilai masa lalu. Sebagai contoh, AR(2) menyatakan bahwa nilai sekarang dipengaruhi oleh dua nilai sebelumnya.
-- Integrated (I) – Proses differencing data sebanyak d kali agar menjadi stasioner, yaitu data tidak memiliki tren atau perubahan varians sepanjang waktu.
-- Moving Average (MA) – Menggambarkan bahwa nilai saat ini juga dipengaruhi oleh kesalahan (residual) dari prediksi sebelumnya. Misalnya, MA(2) mempertimbangkan dua kesalahan sebelumnya.
+- AutoRegressive (AR): Menggunakan hubungan antara observasi saat ini dan observasi sebelumnya.
+- Integrated (I): Melibatkan differencing data untuk membuatnya stasioner.
+- Moving Average (MA): Menggunakan hubungan antara observasi saat ini dan residual error dari model MA pada lag sebelumnya.
 
 Model ARIMA dilambangkan sebagai ARIMA(p, d, q), dengan:
 p: lag dari AR,
@@ -102,14 +101,11 @@ Model ini menghasilkan prediksi yang lebih stabil, dan tren harga pada data uji 
 Model akhir dipilih berdasarkan keseimbangan antara stabilitas prediksi dan performa evaluasi.
 
 ### LSTM (Long Short-Term Memory)
-LSTM adalah arsitektur khusus dari Recurrent Neural Network (RNN) yang dirancang untuk mengatasi masalah vanishing gradient dan mampu menangkap ketergantungan jangka panjang dalam data deret waktu.
-
-Mekanisme LSTM
-Setiap unit LSTM terdiri dari komponen berikut:
-- Forget Gate: Memutuskan informasi mana yang akan dilupakan dari memori sebelumnya.
-- Input Gate: Menentukan informasi baru mana yang akan disimpan ke dalam cell state.
-- Cell State: Menyimpan memori jangka panjang yang diperbarui setiap waktu.
-- Output Gate: Menentukan nilai output berdasarkan memori yang diperbarui.
+LSTM adalah jenis Recurrent Neural Network (RNN) yang mampu menangkap ketergantungan jangka panjang dalam data time series. Setiap unit LSTM terdiri dari:
+- Forget Gate: Menentukan informasi mana yang akan dilupakan.
+- Input Gate: Menentukan informasi baru yang akan disimpan.
+- Cell State: Menyimpan informasi jangka panjang.
+- Output Gate: Menentukan output berdasarkan cell state.
 
 Proses Pemodelan : 
 1. Preprocessing Data
@@ -153,7 +149,7 @@ Model ARIMA digunakan sebagai baseline dalam memprediksi harga emas harian. Berd
     - RMSE (Root Mean Squared Error): 333.80
 Nilai error yang cukup tinggi menunjukkan bahwa model ARIMA memiliki keterbatasan dalam menangkap pola jangka pendek dari data harga emas.
 
-LSTM:
+#### Evaluasi Model LSTM
 Model LSTM diterapkan untuk menangkap pola urutan (sequential pattern) dalam data time series. Berdasarkan hasil pengujian:
 - MAPE (Mean Absolute Percentage Error): 2.21%
 - Akurasi Estimasi: 97.79%
