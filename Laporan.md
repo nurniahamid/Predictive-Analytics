@@ -77,6 +77,24 @@ Eksplorasi Visual Awal :
    - ARIMA(1,1,1): hasil kurang memuaskan
    - ARIMA(2,1,2): nilai AIC rendah, tetapi overfitting
    - ARIMA(2,2,2): stabil dan prediktif
+ 
+#### Proses Pemodelan ARIMA
+1. Transformasi ke Time Series Data latih dan data uji diubah ke format time series dengan index tanggal (Date) dan frekuensi diinfersikan
+2. Identifikasi Parameter (p,d,q) Plot ACF dan PACF digunakan untuk mengevaluasi pola lag dalam data, sebagai dasar pemilihan parameter ARIMA.
+3. Eksperimen Model Tiga model dibandingkan:
+- ARIMA(1,1,1)
+AR(1) tidak signifikan (p=0.08)
+AIC = 9461.276
+Tidak cukup kuat menangkap dinamika tren harga emas.
+- ARIMA(2,1,2)
+Semua parameter signifikan.
+AIC = 9460.719 (terendah)
+Log Likelihood tertinggi.
+Secara statistik paling efisien, namun secara prediksi justru kurang menangkap tren naik tajam di data uji
+- ARIMA(2,2,2)
+AR dan MA sebagian besar signifikan.
+AIC sedikit lebih tinggi = 9463.848.
+model ini menghasilkan proyeksi yang lebih stabil dan mengikuti tren naik aktual harga emas selama periode uji, menjadikannya lebih cocok secara prediktif.
 
 ### LSTM (Long Short-Term Memory)
 - Recurrent Neural Network untuk menangkap ketergantungan jangka panjang
@@ -86,6 +104,32 @@ Eksplorasi Visual Awal :
    - 1 Dense output layer
    - Adam optimizer + MSE loss
    - EarlyStopping digunakan untuk menghindari overfitting
+
+  #### Proses Pemodelan
+1. Preprocessing Data
+- Data harga emas diambil dari kolom Price dan dikonversi menjadi array numerik
+- Skala data distandarisasi menggunakan MinMaxScaler ke rentang 0–1 untuk mempercepat konvergensi model LSTM
+- Data dibagi menjadi:
+Training set: 80% (1108 poin)
+Testing set: 20% (278 poin)
+
+2. Pembuatan Window Time Series
+- Menggunakan pendekatan sliding window:
+Input (X): 30 hari harga emas sebelumnya
+Target (y): harga emas pada hari ke-31
+- Dataset hasil windowing:
+X_train: (1078, 30)
+y_train: (1078,)
+X_test: (248, 30)
+y_test: (248,)
+
+3. Arsitektur Model
+Model LSTM dibangun menggunakan Keras dengan arsitektur sebagai berikut:
+- 2 lapisan LSTM dengan masing-masing 50 unit
+- 1 lapisan Dense (output) untuk memprediksi harga
+- Optimizer: Adam
+- Loss Function: Mean Squared Error
+- Regularisasi: EarlyStopping pada loss dengan patience=5
 
 
 ## Evaluation
