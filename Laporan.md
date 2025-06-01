@@ -71,65 +71,72 @@ Eksplorasi Visual Awal :
 
 ## Modeling
 ### ARIMA (AutoRegressive Integrated Moving Average)
-- Model time series tradisional ARIMA(p,d,q)
-- Pemilihan parameter melalui ACF & PACF
-- Evaluasi berbagai kombinasi parameter:
-   - ARIMA(1,1,1): hasil kurang memuaskan
-   - ARIMA(2,1,2): nilai AIC rendah, tetapi overfitting
-   - ARIMA(2,2,2): stabil dan prediktif
- 
-#### Proses Pemodelan ARIMA
-1. Transformasi ke Time Series Data latih dan data uji diubah ke format time series dengan index tanggal (Date) dan frekuensi diinfersikan
-2. Identifikasi Parameter (p,d,q) Plot ACF dan PACF digunakan untuk mengevaluasi pola lag dalam data, sebagai dasar pemilihan parameter ARIMA.
-3. Eksperimen Model Tiga model dibandingkan:
+Model ARIMA digunakan untuk memodelkan data deret waktu (time series) dengan memperhatikan pola autokorelasi, tren, dan fluktuasi acak. ARIMA memiliki tiga komponen utama:
+- AutoRegressive (AR) – Menjelaskan bahwa nilai masa kini dapat diprediksi dari kombinasi nilai masa lalu. Sebagai contoh, AR(2) menyatakan bahwa nilai sekarang dipengaruhi oleh dua nilai sebelumnya.
+- Integrated (I) – Proses differencing data sebanyak d kali agar menjadi stasioner, yaitu data tidak memiliki tren atau perubahan varians sepanjang waktu.
+- Moving Average (MA) – Menggambarkan bahwa nilai saat ini juga dipengaruhi oleh kesalahan (residual) dari prediksi sebelumnya. Misalnya, MA(2) mempertimbangkan dua kesalahan sebelumnya.
+
+Model ARIMA dilambangkan sebagai ARIMA(p, d, q), dengan:
+p: lag dari AR,
+d: jumlah differencing,
+q: lag dari MA.
+
+Proses Pemodelan :
+1. Transformasi Time Series
+Data harga emas diubah menjadi format deret waktu dengan index tanggal agar dapat dianalisis menggunakan model ARIMA.
+
+2. Identifikasi Parameter (p,d,q)
+Digunakan plot ACF dan PACF untuk mengamati pola autokorelasi dan partial autokorelasi dalam data, sebagai panduan untuk menentukan nilai parameter AR dan MA.
+
+3. Eksperimen Model
+Tiga konfigurasi diuji:
 - ARIMA(1,1,1)
-AR(1) tidak signifikan (p=0.08)
-AIC = 9461.276
-Tidak cukup kuat menangkap dinamika tren harga emas.
+Hasil menunjukkan bahwa koefisien AR(1) tidak signifikan (p-value > 0.05). AIC = 9461.276. Model ini kurang akurat dalam menangkap tren harga emas.
 - ARIMA(2,1,2)
-Semua parameter signifikan.
-AIC = 9460.719 (terendah)
-Log Likelihood tertinggi.
-Secara statistik paling efisien, namun secara prediksi justru kurang menangkap tren naik tajam di data uji
+Semua parameter signifikan dan nilai AIC terendah (9460.719). Namun, model ini terlalu sensitif terhadap data latih (indikasi overfitting) dan tidak cukup responsif terhadap lonjakan harga pada data uji.
 - ARIMA(2,2,2)
-AR dan MA sebagian besar signifikan.
-AIC sedikit lebih tinggi = 9463.848.
-model ini menghasilkan proyeksi yang lebih stabil dan mengikuti tren naik aktual harga emas selama periode uji, menjadikannya lebih cocok secara prediktif.
+Model ini menghasilkan prediksi yang lebih stabil, dan tren harga pada data uji lebih akurat meskipun nilai AIC sedikit lebih tinggi (9463.848). Ini menunjukkan trade-off antara efisiensi statistik dan kemampuan prediktif yang lebih baik.
+
+Model akhir dipilih berdasarkan keseimbangan antara stabilitas prediksi dan performa evaluasi.
 
 ### LSTM (Long Short-Term Memory)
-- Recurrent Neural Network untuk menangkap ketergantungan jangka panjang
-- Input: 30 hari historis untuk memprediksi harga hari ke-31
-- Arsitektur:
-   - 2 layer LSTM (50 unit masing-masing)
-   - 1 Dense output layer
-   - Adam optimizer + MSE loss
-   - EarlyStopping digunakan untuk menghindari overfitting
+LSTM adalah arsitektur khusus dari Recurrent Neural Network (RNN) yang dirancang untuk mengatasi masalah vanishing gradient dan mampu menangkap ketergantungan jangka panjang dalam data deret waktu.
 
-  #### Proses Pemodelan
+Mekanisme LSTM
+Setiap unit LSTM terdiri dari komponen berikut:
+- Forget Gate: Memutuskan informasi mana yang akan dilupakan dari memori sebelumnya.
+- Input Gate: Menentukan informasi baru mana yang akan disimpan ke dalam cell state.
+- Cell State: Menyimpan memori jangka panjang yang diperbarui setiap waktu.
+- Output Gate: Menentukan nilai output berdasarkan memori yang diperbarui.
+
+Proses Pemodelan : 
 1. Preprocessing Data
-- Data harga emas diambil dari kolom Price dan dikonversi menjadi array numerik
-- Skala data distandarisasi menggunakan MinMaxScaler ke rentang 0–1 untuk mempercepat konvergensi model LSTM
+- Data harga emas diambil dari kolom Price, kemudian dinormalisasi menggunakan MinMaxScaler ke rentang [0,1].
 - Data dibagi menjadi:
-Training set: 80% (1108 poin)
-Testing set: 20% (278 poin)
+Training set: 80% (1108 titik data)
+Testing set: 20% (278 titik data)
 
 2. Pembuatan Window Time Series
-- Menggunakan pendekatan sliding window:
-Input (X): 30 hari harga emas sebelumnya
-Target (y): harga emas pada hari ke-31
-- Dataset hasil windowing:
-X_train: (1078, 30)
-y_train: (1078,)
-X_test: (248, 30)
-y_test: (248,)
+- Teknik sliding window digunakan dengan window size = 30.
+- Input (X): 30 hari historis
+- Target (y): harga emas pada hari ke-31
+Bentuk data:
+- X_train: (1078, 30)
+- y_train: (1078,)
+- X_test: (248, 30)
+- y_test: (248,)
 
 3. Arsitektur Model
-Model LSTM dibangun menggunakan Keras dengan arsitektur sebagai berikut:
-- 2 lapisan LSTM dengan masing-masing 50 unit
-- 1 lapisan Dense (output) untuk memprediksi harga
+- Dibangun menggunakan Keras dengan arsitektur:
+<pre>```model = Sequential([
+    Input(shape=(30, 1)),
+    LSTM(50, return_sequences=True),
+    LSTM(50),
+    Dense(1)``` </pre>
+- Loss Function: Mean Squared Error (MSE)
 - Optimizer: Adam
-- Loss Function: Mean Squared Error
-- Regularisasi: EarlyStopping pada loss dengan patience=5
+- EarlyStopping: digunakan untuk menghentikan pelatihan lebih awal jika loss tidak membaik selama 5 epoch.
+- Model ini mampu menangkap tren harga emas dengan baik dan menunjukkan performa generalisasi yang lebih stabil dibanding model ARIMA, terutama pada data uji.
 
 
 ## Evaluation
