@@ -136,6 +136,7 @@ model = Sequential([
     LSTM(50),
     Dense(1)
 ])
+</pre>
 - Loss Function: Mean Squared Error (MSE)
 - Optimizer: Adam
 - EarlyStopping: digunakan untuk menghentikan pelatihan lebih awal jika loss tidak membaik selama 5 epoch.
