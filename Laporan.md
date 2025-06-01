@@ -128,13 +128,14 @@ Bentuk data:
 
 3. Arsitektur Model
 - Dibangun menggunakan Keras dengan arsitektur:
-<pre>```python
-    model = Sequential([
+<pre>
+```python
+model = Sequential([
     Input(shape=(30, 1)),
     LSTM(50, return_sequences=True),
     LSTM(50),
-    Dense(1)])
-    ``` </pre>
+    Dense(1)
+])
 - Loss Function: Mean Squared Error (MSE)
 - Optimizer: Adam
 - EarlyStopping: digunakan untuk menghentikan pelatihan lebih awal jika loss tidak membaik selama 5 epoch.
