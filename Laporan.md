@@ -45,10 +45,12 @@ Kolom:
 - Change %: Perubahan harian dalam persentase
 
 Kondisi Data :
-- Dari semua kolom kita hanya akan menggunakan fitur Date, Price, Harga, High dan low, untuk kolom vol dan change didropout karena kita tidak akan menggunakan nya dalam analisis. 
-- Missing value: terdapat missing value di kolom vol, tetapi karena kolom tersebut tidak digunakan jadi diabaikan saja/kolom vol juga telah di dropout 
-- Duplikat: Tidak ditemukan duplikat baris setelah inspeksi
-- Outlier: Dicek secara visual melalui plot dan nilai z-score pada kolom Price. Outlier diabaikan karena cenderung valid dalam konteks keuangan.
+- Fitur yang Digunakan: Dari seluruh kolom yang tersedia, hanya fitur Date, Price, Harga, High, dan Low yang digunakan dalam analisis.
+Kolom Volume (Vol) dan Change dihapus (drop) karena tidak relevan dengan tujuan pemodelan.
+- Missing Value: Terdapat nilai kosong (missing) pada kolom Volume, namun karena kolom ini tidak digunakan, maka missing value tersebut diabaikan.
+- Duplikat: Tidak ditemukan baris duplikat setelah dilakukan pemeriksaan data.
+- Outlier: Outlier diperiksa menggunakan visualisasi plot dan perhitungan z-score pada kolom Price.
+Outlier tidak dihapus, karena masih dianggap valid dalam konteks data keuangan (misalnya, lonjakan harga wajar terjadi pada periode tertentu).
 
 Eksplorasi Visual Awal : 
 - Visualisasi tren (Price) menggunakan scatter plot
