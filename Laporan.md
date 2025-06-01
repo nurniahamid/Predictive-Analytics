@@ -145,26 +145,38 @@ model = Sequential([
 
 ## Evaluation
 #### Evaluasi Model ARIMA 
-Hasil Evaluasi Model
-- ARIMA(2,2,2):
-- MAE: 255.01
-- RMSE: 333.80
+Model ARIMA digunakan sebagai baseline dalam memprediksi harga emas harian. Berdasarkan hasil pelatihan dan pengujian:
+- ARIMA(2,2,2)
+    - MAE (Mean Absolute Error): 255.01
+    - RMSE (Root Mean Squared Error): 333.80
+Nilai error yang cukup tinggi menunjukkan bahwa model ARIMA memiliki keterbatasan dalam menangkap pola jangka pendek dari data harga emas.
 
 LSTM:
-- MAPE: 3.30%
-- Akurasi estimasi: 96.7%
+Model LSTM diterapkan untuk menangkap pola urutan (sequential pattern) dalam data time series. Berdasarkan hasil pengujian:
+- MAPE (Mean Absolute Percentage Error): 2.21%
+- Akurasi Estimasi: 97.79%
+Model LSTM menunjukkan performa yang jauh lebih baik dibanding ARIMA, terutama dalam menangkap tren jangka pendek dan fluktuasi data emas harian.
 
 #### Keterkaitan dengan Business Understanding
 
 Pertanyaan
 1. Apakah masalah bisnis berhasil dijawab?
-Jawaban : Ya, model berhasil memberikan prediksi harga emas harian yang cukup akurat.
-2. Apakah semua goals tercapai?
-Jawaban : Ya, model dibangun, dievaluasi, dan model terbaik ditentukan.
-3. Apakah solusi berdampak?
-Jawaban : Ya, LSTM memberikan akurasi tinggi dan dapat digunakan sebagai referensi untuk strategi investasi jangka pendek.
+Ya, model berhasil memberikan prediksi harga emas harian yang akurat dan dapat digunakan sebagai dasar pengambilan keputusan.
 
-Model LSTM berhasil menjawab kebutuhan prediksi harga emas dengan performa yang sangat baik, dan dapat membantu pelaku pasar dalam mengambil keputusan berbasis data historis.
+2. Apakah semua goals tercapai?
+Ya, seluruh tujuan proyek terpenuhi:
+- Model baseline (ARIMA) dan advanced (LSTM) berhasil dibangun.
+- Evaluasi performa dilakukan secara kuantitatif.
+- Model terbaik berhasil ditentukan berdasarkan hasil uji.
+
+3. Apakah solusi berdampak?
+Ya, model LSTM memberikan:
+- Akurasi tinggi,
+- Kemampuan menangkap pola musiman/tren,
+- Potensi implementasi untuk strategi trading atau investasi jangka pendek berbasis data historis.
+
+
+Model LSTM terbukti efektif dalam memprediksi harga emas dengan tingkat error yang rendah (MAPE 2.21%) dan akurasi tinggi (97.79%). Model ini dapat digunakan oleh pelaku pasar sebagai alat bantu analisis untuk pengambilan keputusan yang lebih cerdas dan berbasis data.
 
 
 Referensi:
