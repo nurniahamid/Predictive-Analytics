@@ -30,17 +30,23 @@ Metrik evaluasi:
 
 Dataset : 
 - Sumber data: Investing.com
-- Tautan file: XAU_USD Historical Data.csv
-- Jumlah data: 1368 baris, 6 kolom
+- Tautan file: https://www.investing.com/currencies/xau-usd-historical-data
+- Jumlah data: 
+Data berisi 1368 baris dalam data set
+Data mempunyai 7 kolom, yaitu : Date, Price, Open, High, Low Vol, dan Change %
 
 Kolom:
-- Date: Tanggal transaksi
-- Price: Harga penutupan
-- Open, High, Low: Harga pembukaan, tertinggi, dan terendah per hari
-- Change %: Persentase perubahan harga harian
+- Date: Tanggal perdagangan 
+- Price: Harga penutupan emas pada tanggal tersebut 
+- Open: Harga pembukaan pada saat pasar dibuka pada hari itu 
+- High: Harga tertinggi emas yang dicapai padda hari itu 
+- Low: Harga terendah emas dalam hari itu
+- Vol: Volume transaksi
+- Change %: Perubahan harian dalam persentase
 
 Kondisi Data :
-- Missing value: Tidak ditemukan missing value pada kolom utama
+- Dari semua kolom kita hanya akan menggunakan fitur Date, Price, Harga, High dan low, untuk kolom vol dan change didropout karena kita tidak akan menggunakan nya dalam analisis. 
+- Missing value: terdapat missing value di kolom vol, tetapi karena kolom tersebut tidak digunakan jadi diabaikan saja/kolom vol juga telah di dropout 
 - Duplikat: Tidak ditemukan duplikat baris setelah inspeksi
 - Outlier: Dicek secara visual melalui plot dan nilai z-score pada kolom Price. Outlier diabaikan karena cenderung valid dalam konteks keuangan.
 
